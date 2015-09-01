@@ -42,7 +42,7 @@ let strokeColor:CGColorRef = color.CGColor
 CGContextSetStrokeColorWithColor(context, strokeColor)
 CGContextSetLineWidth(context, 2.0)
 if circleDash {
-CGContextSetLineDash(context, 3, [2,3], 2)
+    CGContextSetLineDash(context, 3, [2,3], 2)
 }
 // Define content frame, center, radius
 let contentFrameWidth = self.contentFrame.size.width
@@ -62,9 +62,9 @@ let textStyle = NSMutableParagraphStyle.defaultParagraphStyle().mutableCopy() as
 textStyle.alignment = NSTextAlignment.Center
 
 let textAttributes: [String: AnyObject] = [
-NSForegroundColorAttributeName : color.CGColor,
-NSFontAttributeName : UIFont.systemFontOfSize(8),
-NSParagraphStyleAttributeName : textStyle
+    NSForegroundColorAttributeName : color.CGColor,
+    NSFontAttributeName : UIFont.systemFontOfSize(8),
+    NSParagraphStyleAttributeName : textStyle
 ]
 title.drawInRect(rectTitle, withAttributes: textAttributes)
 
