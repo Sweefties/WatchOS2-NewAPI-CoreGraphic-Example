@@ -16,13 +16,13 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet var drawImage: WKInterfaceImage!
     
     // MARK: - Properties
-    private let color = UIColor(red: 0.0/255.0, green: 153.0/255.0, blue: 221.0/255.0, alpha: 1.0)
-    private let scale = WKInterfaceDevice.currentDevice().screenScale
-    private let circleDash:Bool = true // false to draw a classic circle
+    fileprivate let color = UIColor(red: 0.0/255.0, green: 153.0/255.0, blue: 221.0/255.0, alpha: 1.0)
+    fileprivate let scale = WKInterfaceDevice.current().screenScale
+    fileprivate let circleDash:Bool = true // false to draw a classic circle
     
     // MARK: - Calls
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
         // Configure interface objects here.
     }
     
@@ -43,47 +43,47 @@ class InterfaceController: WKInterfaceController {
 typealias DrawCoreGraphic = InterfaceController
 extension DrawCoreGraphic {
     
-    private func drawCoreGraphicInImage() {
+    fileprivate func drawCoreGraphicInImage() {
         // Begin context for image
         UIGraphicsBeginImageContextWithOptions(self.contentFrame.size, false, scale)
         
         // Get the current context
-        let context:CGContextRef = UIGraphicsGetCurrentContext()!
+        let context:CGContext = UIGraphicsGetCurrentContext()!
         
         // Set Color, Stroke, LineWidth, LineDash
-        let strokeColor:CGColorRef = color.CGColor
-        CGContextSetStrokeColorWithColor(context, strokeColor)
-        CGContextSetLineWidth(context, 2.0)
+        let strokeColor:CGColor = color.cgColor
+        context.setStrokeColor(strokeColor)
+        context.setLineWidth(2.0)
         if circleDash {
-            CGContextSetLineDash(context, 3, [2,3], 2)
+            context.setLineDash(phase: 3, lengths: [2,3])
         }
         // Define content frame, center, radius
         let contentFrameWidth = self.contentFrame.size.width
         let contentFrameHeight = self.contentFrame.size.height
-        let center = CGPointMake(contentFrameWidth / 2.0, contentFrameHeight / 2.0)
+        let center = CGPoint(x: contentFrameWidth / 2.0, y: contentFrameHeight / 2.0)
         let radius = min(contentFrameWidth / 2.0, contentFrameHeight / 2.0) - 2
         
         // Context and add an Arc of a circle to the current path
-        CGContextBeginPath(context)
-        CGContextAddArc(context, center.x, center.y, radius, 0, CGFloat(2 * M_PI), 1)
-        CGContextStrokePath(context)
+        context.beginPath()
+        context.addArc(center: center, radius: radius, startAngle: 0, endAngle: CGFloat(2 * M_PI), clockwise: true)
+        context.strokePath()
         
         // Set text title with attributes
         let title:String = "Core Graphic"
-        let rectTitle = CGRectMake(center.x - radius / 4.0, center.y - radius / 4.0, radius / 2.0, radius / 2.0)
-        let textStyle = NSMutableParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
-        textStyle.alignment = NSTextAlignment.Center
+        let rectTitle = CGRect(x: center.x - radius / 4.0, y: center.y - radius / 4.0, width: radius / 2.0, height: radius / 2.0)
+        let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+        textStyle.alignment = NSTextAlignment.center
         
         let textAttributes: [String: AnyObject] = [
-            NSForegroundColorAttributeName : color.CGColor,
-            NSFontAttributeName : UIFont.systemFontOfSize(8),
+            NSForegroundColorAttributeName : color.cgColor,
+            NSFontAttributeName : UIFont.systemFont(ofSize: 8),
             NSParagraphStyleAttributeName : textStyle
         ]
-        title.drawInRect(rectTitle, withAttributes: textAttributes)
+        title.draw(in: rectTitle, withAttributes: textAttributes)
         
         // Context create image
-        let cgImage:CGImageRef = CGBitmapContextCreateImage(context)!
-        let drawingImage:UIImage = UIImage(CGImage: cgImage)
+        let cgImage:CGImage = context.makeImage()!
+        let drawingImage:UIImage = UIImage(cgImage: cgImage)
         UIGraphicsEndImageContext()
         
         // Drawing in WKInterfaceImage
